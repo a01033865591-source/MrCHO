@@ -1,17 +1,15 @@
 const foods = [
     {
         name: "김치찌개",
-        image: "https://www.themealdb.com/images/category/beef.png", // Placeholder image
         recipe: [
-            { text: "김치와 돼지고기를 볶는다.", image: "https://picsum.photos/200/100?random=1" },
-            { text: "육수를 붓고 끓인다.", image: "https://picsum.photos/200/100?random=2" },
-            { text: "두부, 파 등을 넣고 한소끔 더 끓인다.", image: "https://picsum.photos/200/100?random=3" },
-            { text: "간을 맞춘다.", image: "https://picsum.photos/200/100?random=4" }
+            { text: "김치와 돼지고기를 볶는다." },
+            { text: "육수를 붓고 끓인다." },
+            { text: "두부, 파 등을 넣고 한소끔 더 끓인다." },
+            { text: "간을 맞춘다." }
         ]
     },
     {
         name: "불고기",
-        image: "https://www.themealdb.com/images/category/beef.png", // Placeholder image
         recipe: [
             "소고기를 양념에 재운다.",
             "팬에 양념된 고기와 채소를 볶는다.",
@@ -20,7 +18,6 @@ const foods = [
     },
     {
         name: "비빔밥",
-        image: "https://www.themealdb.com/images/category/beef.png", // Placeholder image
         recipe: [
             "밥 위에 각종 나물과 고기를 올린다.",
             "고추장을 넣고 비빈다.",
@@ -29,7 +26,6 @@ const foods = [
     },
     {
         name: "짜장면",
-        image: "https://www.themealdb.com/images/category/beef.png", // Placeholder image
         recipe: [
             "춘장을 볶고 돼지고기와 채소를 넣고 볶는다.",
             "물을 넣고 끓인 후 전분으로 농도를 조절한다.",
@@ -38,7 +34,6 @@ const foods = [
     },
     {
         name: "라면",
-        image: "https://www.themealdb.com/images/category/beef.png", // Placeholder image
         recipe: [
             "냄비에 물을 끓인다.",
             "면과 스프를 넣고 끓인다.",
@@ -47,7 +42,6 @@ const foods = [
     },
     {
         name: "떡볶이",
-        image: "https://www.themealdb.com/images/category/beef.png", // Placeholder image
         recipe: [
             "냄비에 물, 고추장, 고춧가루, 설탕을 넣고 끓인다.",
             "떡과 어묵을 넣고 졸인다.",
@@ -59,7 +53,7 @@ const foods = [
 const recommendBtn = document.getElementById('recommend-btn');
 const resultDiv = document.getElementById('result');
 const foodNameElem = document.getElementById('food-name');
-const foodImageElem = document.getElementById('food-image');
+// foodImageElem is no longer needed as the image tag is removed from index.html
 const recipeDiv = document.getElementById('recipe');
 
 recommendBtn.addEventListener('click', () => {
@@ -67,13 +61,12 @@ recommendBtn.addEventListener('click', () => {
     const selectedFood = foods[randomIndex];
 
     foodNameElem.textContent = selectedFood.name;
-    foodImageElem.src = selectedFood.image;
+    // Removed foodImageElem.src assignment
     
     let recipeHtml = '<ol>';
     if (typeof selectedFood.recipe[0] === 'object') { // Check if recipe steps are objects
         recipeHtml += selectedFood.recipe.map(step => `
             <li>
-                <img src="${step.image}" alt="${selectedFood.name} ${step.text}" style="max-width: 200px; height: auto; display: block; margin-bottom: 10px;">
                 <span>${step.text}</span>
             </li>
         `).join('');
