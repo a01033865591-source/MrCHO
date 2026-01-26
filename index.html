@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>오늘 뭐 먹지? & 로또 번호 생성기 & 집안일 룰렛</title>
+    <title>오늘 뭐 먹지? & 로또 번호 생성기 & 집안일 룰렛 & 점심 메뉴 룰렛</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -32,13 +32,23 @@
 
         <div class="chore-section">
             <h1>집안일 룰렛</h1>
-            <div class="roulette-wheel-container"> <!-- Use existing container class -->
-                <div id="roulette-pointer">▼</div> <!-- Adapted ID -->
-                <div id="roulette-wheel"></div> <!-- Adapted ID -->
+            <div class="roulette-wheel-container"> 
+                <div id="roulette-pointer">▼</div> 
+                <div id="roulette-wheel"></div> 
             </div>
             <button id="spin-roulette-btn">룰렛 돌리기</button>
             <p id="chore-final-result" class="result-text"></p>
         </div>
+
+        <hr> <!-- Separator -->
+
+        <div class="lunch-roulette-section">
+            <h1>점심 메뉴 추천 룰렛</h1>
+            <canvas id="lunch-roulette-canvas" width="300" height="300"></canvas>
+            <button id="spin-lunch-roulette-btn">메뉴 돌리기</button>
+            <p id="lunch-menu-result" class="result-text"></p>
+        </div>
+
     </div>
     <script src="main.js"></script>
 </body>

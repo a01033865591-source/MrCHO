@@ -212,10 +212,31 @@ button:hover {
     color: #e63946; /* To make it visible */
 }
 
-#chore-final-result {
+.result-text { /* Added for chore-final-result */
     font-size: 1.8rem;
     font-weight: bold;
     color: #1d3557; /* Dark blue text */
     min-height: 30px;
     margin-top: 1rem;
+}
+
+/* Lunch Roulette Section Styles */
+.lunch-roulette-section {
+    margin-top: 2rem;
+}
+
+#lunch-roulette-canvas {
+    border: 5px solid #1d3557;
+    border-radius: 50%;
+    margin: 2rem auto;
+    display: block; /* Center the canvas */
+}
+
+#spin-lunch-roulette-btn {
+    background: linear-gradient(45deg, #007bff, #0056b3); /* Blue gradient */
+}
+
+#spin-lunch-roulette-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }

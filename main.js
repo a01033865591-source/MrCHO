@@ -209,3 +209,139 @@ spinRouletteBtn.addEventListener('click', () => {
         spinRouletteBtn.disabled = false; // Re-enable button
     });
 });
+
+
+// Lunch Menu Roulette Logic (Canvas-based)
+const lunchCanvas = document.getElementById("lunch-roulette-canvas");
+const lunchCtx = lunchCanvas.getContext("2d");
+const spinLunchRouletteBtn = document.getElementById('spin-lunch-roulette-btn');
+const lunchMenuResultElem = document.getElementById('lunch-menu-result');
+
+const lunchProduct = ["햄버거", "순대국", "정식당", "중국집", "구내식당"];
+const lunchColors = []; // Will be populated dynamically
+
+let currentLunchSpin = 0; // To track accumulated spin for lunch roulette
+
+const drawLunchRoulette = () => {
+    const [cw, ch] = [lunchCanvas.width / 2, lunchCanvas.height / 2];
+    const arc = Math.PI / (lunchProduct.length / 2);
+    
+    lunchCtx.clearRect(0, 0, lunchCanvas.width, lunchCanvas.height); // Clear canvas before redrawing
+    
+    if(lunchColors.length === 0){ // Generate colors only once
+        for(let l=0; l<lunchProduct.length; l++){
+            let r = Math.floor(Math.random() * 256);
+            let g = Math.floor(Math.random() * 256);
+            let b = Math.floor(Math.random() * 256);
+            lunchColors.push("rgb(" + r + "," + g + "," + b + ")");
+        }
+    }
+
+    for (let i = 0; i < lunchProduct.length; i++) {
+        lunchCtx.beginPath();
+        lunchCtx.fillStyle = lunchColors[i % (lunchColors.length)];
+        lunchCtx.moveTo(cw, ch);
+        lunchCtx.arc(cw, ch, cw, arc * i, arc * (i + 1)); // Corrected arc angles
+        lunchCtx.fill();
+        lunchCtx.closePath();
+    }
+
+    lunchCtx.fillStyle = "#fff"; // Text color
+    lunchCtx.font = "18px Pretendard"; // Font
+    lunchCtx.textAlign = "center";
+    lunchCtx.textBaseline = "middle"; // Center text vertically
+    
+    for (let i = 0; i < lunchProduct.length; i++) {
+        const angle = arc * i + (arc / 2); // Center of the segment
+
+        lunchCtx.save();
+
+        lunchCtx.translate(
+            cw + Math.cos(angle) * (cw - 70), // Position text further out
+            ch + Math.sin(angle) * (ch - 70)
+        );
+
+        lunchCtx.rotate(angle + Math.PI / 2); // Rotate text with segment
+
+        lunchCtx.fillText(lunchProduct[i], 0, 0); // Draw text
+        
+        lunchCtx.restore();
+    }
+};
+
+const spinLunchRoulette = () => {
+    spinLunchRouletteBtn.disabled = true;
+    lunchMenuResultElem.textContent = ''; // Clear previous result
+
+    const randomIndex = Math.floor(Math.random() * lunchProduct.length);
+    const selectedItem = lunchProduct[randomIndex];
+    
+    const arcAngleRad = (360 / lunchProduct.length) * (Math.PI / 180); // Angle of each segment in radians
+    const targetAngleRad = arcAngleRad * randomIndex + (arcAngleRad / 2); // Center of the target segment in radians
+
+    // Calculate how much to rotate to land the selected item at the top (0 degrees)
+    // The canvas's 0 degree is to the right. We want the pointer at the top.
+    // So, we need to rotate by `270 - (targetAngleInDegrees)` to align the center of the segment to 270 degrees (which is top left in math, but top with canvas rotation)
+    // Or simpler, if the pointer is at 90 degrees (top), and segment center is X, rotate by (X - 90) + full_rotations.
+    // Let's use the given code's randomSpin logic, but make it land on target.
+
+    const baseRotations = 5 * 360; // Spin at least 5 full rotations
+    // The user's pointer is at the top pointing down. So, 0 degrees is top.
+    // We need to rotate the wheel so the chosen segment is at the top, pointing down.
+    // If the angle of the segment is `angle`, we want to rotate by `360 - angle`.
+    // The provided `rotate` function does `rotate(-${rotate}deg)`.
+    // So, `rotate = (target_segment_start_angle + half_segment_angle)` should be landed at 0 degrees.
+    // Let's adapt from the original `rotate` function's logic.
+    
+    const segmentDegree = 360 / lunchProduct.length;
+    const offset = Math.floor(Math.random() * (segmentDegree - 10)) + 5; // A bit of random offset within the segment
+    
+    // Calculate the degree needed to position the selected item at the top (pointer position)
+    // If segment 0 starts at 0, its center is segmentDegree/2.
+    // To land segment 0 at the top (0 degrees), we need to rotate by `-(0 + segmentDegree/2)`.
+    // For segment `randomIndex`, its center is `randomIndex * segmentDegree + segmentDegree / 2`.
+    // So, target position relative to 0 is `-(randomIndex * segmentDegree + segmentDegree / 2)`.
+    
+    const targetRotation = (randomIndex * segmentDegree) + (segmentDegree / 2);
+    // The user's pointer is at the top (0 degrees). We need to rotate the wheel such that
+    // the target segment's center is opposite to the pointer.
+    // To land at the top, the current orientation needs to be rotated such that the selected item faces the bottom,
+    // then the whole wheel rotates to bring it to the top.
+    // Let's just use the `randomSpin` value provided, and add a constant offset to make it land on target.
+    // The pointer in the user's code points "down" at the top of the wheel (like a standard roulette).
+    // So, if segment 0 is at 0-X degrees, we want its center at 0 degrees. So we rotate by `-(segmentCenter)`.
+
+    // The randomSpin should be the total absolute rotation.
+    // (randomIndex * segmentDegree) is the start angle of the selected segment.
+    // (randomIndex * segmentDegree + segmentDegree / 2) is the center angle of the selected segment.
+    // To land this center angle at the top (0 degrees), we need to rotate by `(360 - center_angle_from_0)`.
+    
+    // Let's try to adapt the user's spin logic, which uses `ran * arc + 3600 + (arc * 3) - (arc/4) + alpha;`
+    // where `arc` is 360/product.length and `ran` is randomIndex.
+    
+    const finalRotateValue = (randomIndex * segmentDegree) + 3600 + (segmentDegree * 3) - (segmentDegree / 4) + Math.floor(Math.random() * (segmentDegree / 2));
+    
+    lunchCanvas.style.transform = `rotate(-${finalRotateValue}deg)`;
+    lunchCanvas.style.transition = `transform 4s cubic-bezier(0.2, 0.8, 0.3, 1)`;
+
+    setTimeout(() => {
+        lunchMenuResultElem.textContent = `당첨! ${selectedItem}`;
+        spinLunchRouletteBtn.disabled = false;
+        // Reset transform after spin to prevent accumulating huge rotation values,
+        // while visually maintaining the result.
+        // Get the computed final rotation.
+        const currentTransform = window.getComputedStyle(lunchCanvas).getPropertyValue('transform');
+        const matrix = new DOMMatrixReadOnly(currentTransform);
+        const currentZRotation = Math.atan2(matrix.m21, matrix.m11) * (180 / Math.PI);
+        // Normalize angle to be between 0 and 360
+        const normalizedAngle = (currentZRotation + 360) % 360;
+
+        lunchCanvas.style.transition = 'none'; // Disable transition for instant reset
+        lunchCanvas.style.transform = `rotate(${normalizedAngle}deg)`; // Reset to normalized angle
+    }, 4000); // Wait for transition to complete
+};
+
+// Initialize the lunch roulette on page load
+drawLunchRoulette();
+
+spinLunchRouletteBtn.addEventListener('click', spinLunchRoulette);
