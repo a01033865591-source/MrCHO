@@ -113,7 +113,7 @@ const segmentColors = [
 const segmentAngle = 360 / chores.length;
 
 // Dynamically generate roulette segments
-rouletteWheel.innerHTML = ''; // Clear existing conic-gradient based setup
+rouletteWheel.innerHTML = ''; 
 chores.forEach((chore, index) => {
     const segment = document.createElement('div');
     segment.className = 'roulette-segment';
@@ -122,14 +122,11 @@ chores.forEach((chore, index) => {
     // Rotate each segment into position
     segment.style.transform = `rotate(${index * segmentAngle}deg)`;
     
-    // Create text wrapper to counter-rotate text
+    // Create text wrapper inside segment
     const textWrapper = document.createElement('div');
     textWrapper.className = 'segment-text-content';
     textWrapper.textContent = chore;
-    // Counter-rotate text by half segment angle to keep it horizontal
-    // and then rotate by negative of segment's angle to compensate for parent rotation
-    const textRotation = -(index * segmentAngle + (segmentAngle / 2));
-    textWrapper.style.transform = `translateY(-50%) rotate(${textRotation}deg)`; // Adjust positioning as needed
+    // No counter-rotation here, text will rotate with the segment
     
     segment.appendChild(textWrapper);
     rouletteWheel.appendChild(segment);
