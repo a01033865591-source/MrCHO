@@ -3,10 +3,10 @@ const foods = [
         name: "김치찌개",
         image: "https://live.staticflickr.com/111/294030632_50a59727d2_o.jpg",
         recipe: [
-            "김치와 돼지고기를 볶는다.",
-            "육수를 붓고 끓인다.",
-            "두부, 파 등을 넣고 한소끔 더 끓인다.",
-            "간을 맞춘다."
+            { text: "김치와 돼지고기를 볶는다.", image: "https://picsum.photos/200/100?random=1" },
+            { text: "육수를 붓고 끓인다.", image: "https://picsum.photos/200/100?random=2" },
+            { text: "두부, 파 등을 넣고 한소끔 더 끓인다.", image: "https://picsum.photos/200/100?random=3" },
+            { text: "간을 맞춘다.", image: "https://picsum.photos/200/100?random=4" }
         ]
     },
     {
@@ -69,7 +69,19 @@ recommendBtn.addEventListener('click', () => {
     foodNameElem.textContent = selectedFood.name;
     foodImageElem.src = selectedFood.image;
     
-    recipeDiv.innerHTML = '<ol>' + selectedFood.recipe.map(step => `<li>${step}</li>`).join('') + '</ol>';
+    let recipeHtml = '<ol>';
+    if (typeof selectedFood.recipe[0] === 'object') { // Check if recipe steps are objects
+        recipeHtml += selectedFood.recipe.map(step => `
+            <li>
+                <img src="${step.image}" alt="${selectedFood.name} ${step.text}" style="max-width: 200px; height: auto; display: block; margin-bottom: 10px;">
+                <span>${step.text}</span>
+            </li>
+        `).join('');
+    } else { // Assume recipe steps are strings
+        recipeHtml += selectedFood.recipe.map(step => `<li>${step}</li>`).join('');
+    }
+    recipeHtml += '</ol>';
+    recipeDiv.innerHTML = recipeHtml;
     
     resultDiv.classList.remove('hidden');
 });
