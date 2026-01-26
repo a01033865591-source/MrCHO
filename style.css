@@ -153,60 +153,33 @@ button:hover {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-.roulette-wheel-container {
+.roulette-wheel-container { /* This acts as roulette-container */
     position: relative;
-    width: 350px; /* Increased size */
-    height: 350px; /* Increased size */
+    width: 300px; /* User provided size */
+    height: 300px; /* User provided size */
     margin: 2rem auto;
     border-radius: 50%;
-    overflow: hidden;
     box-shadow: 0 0 0 5px #e63946, 0 8px 25px rgba(0, 0, 0, 0.2);
-    display: flex; /* To center the wheel segments */
-    justify-content: center;
-    align-items: center;
+    /* overflow: hidden; Removed as segments are not individual elements anymore */
 }
 
-#roulette-wheel {
-    width: 100%;
+#roulette-wheel { /* This acts as wheel */
+    width: 100%; 
     height: 100%;
-    position: relative;
-    border-radius: 50%; /* Ensure it's perfectly round */
-    transition: transform 4s cubic-bezier(0.25, 0.1, 0.25, 1);
-    /* Conic gradient will be applied by JS for segments */
+    border-radius: 50%;
+    border: 5px solid #333;
+    transition: transform 4s cubic-bezier(0.2, 0.8, 0.3, 1); /* User provided transition */
+    /* background: conic-gradient will be applied by JS */
 }
 
-.roulette-segment {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center; /* Center text vertically within the segment */
-    padding-top: 20px; /* Adjusted padding */
-    box-sizing: border-box;
-    font-weight: bold;
-    font-size: 1.1em; /* Increased font size */
-    color: #333; /* Darker text for better contrast */
-    text-shadow: 1px 1px 2px rgba(255,255,255,0.5); /* Lighter shadow for dark text */
-    white-space: nowrap;
-    overflow: hidden;
-    clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 50%, 50% 50%); /* Base for a segment */
-    transform-origin: 50% 50%; /* Rotate around its own center */
-    top: 0; left: 0;
-}
-
-
-.roulette-pointer {
-    position: absolute;
-    top: -25px; /* Adjusted position for larger wheel */
+#roulette-pointer { /* Adapted from user's #pointer */
+    position: absolute; 
+    top: -20px; 
     left: 50%;
     transform: translateX(-50%);
-    width: 0;
-    height: 0;
-    border-left: 15px solid transparent;
-    border-right: 15px solid transparent;
-    border-bottom: 25px solid #e63946; /* Red pointer */
+    font-size: 30px; 
     z-index: 10;
+    color: #e63946; /* To make it visible */
 }
 
 #chore-final-result {

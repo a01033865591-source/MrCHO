@@ -102,36 +102,28 @@ const lottoGamesContainer = document.getElementById('lotto-games-container');
 // Chore Roulette elements
 const spinRouletteBtn = document.getElementById('spin-roulette-btn');
 const choreFinalResultElem = document.getElementById('chore-final-result'); 
-const rouletteWheel = document.getElementById('roulette-wheel');
+const rouletteWheel = document.getElementById('roulette-wheel'); // Changed ID from 'wheel'
 const chores = ["설거지하기", "방 청소하기", "밥 차리기", "빨래하기", "재활용 버리기", "쓰레기 버리기"]; 
 
-// Generate roulette segments dynamically
-// More distinct colors for better visibility
+// More distinct colors for better visibility, and to match the conic-gradient
 const segmentColors = [
-    '#FFC0CB', '#ADD8E6', '#90EE90', '#FFD700', '#FFA07A', '#DDA0DD',
-    '#B0E0E6', '#F0E68C', '#FAFAD2', '#D8BFD8', '#FFB6C1', '#87CEEB'
+    '#FFADAD', '#FFD6A5', '#FDFFB6', '#CAFFBF', '#9BF6FF', '#A0C4FF',
+    '#BDB2FF', '#FFC6FF', '#FFFFFC', '#E0BBE4', '#957DAD', '#FFC3A0'
 ];
 const segmentAngle = 360 / chores.length;
 
+// Dynamically set conic-gradient background for the roulette wheel
+let conicGradientString = 'conic-gradient(';
 chores.forEach((chore, index) => {
-    const segment = document.createElement('div');
-    segment.className = 'roulette-segment';
-    segment.style.backgroundColor = segmentColors[index % segmentColors.length];
-    
-    // Rotate the entire segment div
-    segment.style.transform = `rotate(${index * segmentAngle}deg)`;
-    
-    // Create inner div for text to counteract segment rotation and position it
-    const textWrapper = document.createElement('div');
-    textWrapper.className = 'segment-text-wrapper';
-    textWrapper.textContent = chore;
-    // Rotate text back so it's horizontal, and position it towards the outer edge
-    textWrapper.style.transform = `rotate(${segmentAngle / 2}deg) translate(0, -100%) rotate(${-index * segmentAngle - segmentAngle / 2}deg)`;
-    textWrapper.style.paddingTop = '10px'; // Adjust padding to move text
-    
-    segment.appendChild(textWrapper);
-    rouletteWheel.appendChild(segment);
+    const startAngle = index * segmentAngle;
+    const endAngle = (index + 1) * segmentAngle;
+    conicGradientString += `${segmentColors[index % segmentColors.length]} ${startAngle}deg ${endAngle}deg`;
+    if (index < chores.length - 1) {
+        conicGradientString += ', ';
+    }
 });
+conicGradientString += ')';
+rouletteWheel.style.background = conicGradientString;
 
 // Food recommendation logic
 recommendBtn.addEventListener('click', () => {
@@ -183,7 +175,7 @@ generateLottoBtn.addEventListener('click', () => {
 
 
 // Chore Roulette logic
-let currentRotation = 0; // Keep track of the current rotation for continuous spins
+let currentRotation = 0; 
 spinRouletteBtn.addEventListener('click', () => {
     spinRouletteBtn.disabled = true; // Disable button during spin
     choreFinalResultElem.textContent = ''; // Clear previous result
@@ -191,34 +183,17 @@ spinRouletteBtn.addEventListener('click', () => {
     const randomIndex = Math.floor(Math.random() * chores.length);
     const selectedChore = chores[randomIndex];
 
-    // Calculate rotation for the selected segment
-    // We want the selected segment to land under the pointer.
-    // The pointer is at 0 degrees (top).
-    // The target is the center of the selected segment.
-    // `randomIndex * segmentAngle` is the start of the segment.
-    // `randomIndex * segmentAngle + segmentAngle / 2` is the center.
-    // To land on the center, we need to rotate by `-(center_angle)` relative to the pointer.
-    // Plus add multiple full rotations for a good spin effect.
+    const baseRotations = 5 * 360; // Spin at least 5 full rotations (user's example uses 1440 = 4*360)
+    const targetAngleForSelectedChore = 360 - (randomIndex * segmentAngle + segmentAngle / 2); // Angle to land selected chore under pointer
+
+    // Add extra random spin within a small range to make it less predictable
+    const extraRandomSpin = Math.floor(Math.random() * (segmentAngle - 10)) + 5; // A little random wiggle
     
-    const baseRotations = 5 * 360; // Spin at least 5 full rotations
-    const targetSegmentOffset = randomIndex * segmentAngle; // Start of the segment
-    const landingAngle = targetSegmentOffset + (segmentAngle / 2); // Center of the segment
+    const totalRotation = baseRotations + targetAngleForSelectedChore + extraRandomSpin;
 
-    // Calculate how much more to rotate from the current position
-    // We want the landingAngle to end up at 0 degrees (top).
-    // So, rotation_needed = (360 - landingAngle) + current_rotation
-    // To ensure it lands under the pointer (which is conceptually at 0 degrees or 360 degrees, pointing "up")
-    // We need to rotate the wheel such that the selected segment's center is aligned with the pointer.
-    // The pointer points "up" (0 degrees). A segment's start is at `index * segmentAngle`.
-    // The amount to rotate is `(360 - (start_angle + half_angle)) + base_rotations`
-    // Example: If segment 0 is from 0-60 degrees, its center is 30. We need to rotate by (360 - 30) = 330 degrees.
-    // If segment 1 is from 60-120 degrees, its center is 90. We need to rotate by (360 - 90) = 270 degrees.
-    
-    const finalRotationTarget = baseRotations + (360 - landingAngle);
+    currentRotation = totalRotation; // Set the new rotation directly
 
-    currentRotation = finalRotationTarget; // Set the new rotation directly
-
-    rouletteWheel.style.transition = 'transform 4s cubic-bezier(0.25, 0.1, 0.25, 1)'; // Apply transition
+    rouletteWheel.style.transition = 'transform 4s cubic-bezier(0.2, 0.8, 0.3, 1)'; // User's provided transition
     rouletteWheel.style.transform = `rotate(${currentRotation}deg)`;
 
     // Wait for the transition to end
@@ -226,10 +201,5 @@ spinRouletteBtn.addEventListener('click', () => {
         rouletteWheel.removeEventListener('transitionend', handler);
         choreFinalResultElem.textContent = `당첨! ${selectedChore}`;
         spinRouletteBtn.disabled = false; // Re-enable button
-        // Optional: Reset rotation to a smaller value to avoid excessively large numbers
-        // and maintain visual continuity for the next spin.
-        // currentRotation = currentRotation % 360; 
-        // rouletteWheel.style.transition = 'none'; // Temporarily disable transition
-        // rouletteWheel.style.transform = `rotate(${currentRotation}deg)`;
     });
 });
