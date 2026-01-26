@@ -47,6 +47,46 @@ const foods = [
             "떡과 어묵을 넣고 졸인다.",
             "파, 양파 등을 추가하여 마무리한다."
         ]
+    },
+    {
+        name: "초밥",
+        recipe: [
+            "초밥용 밥을 준비한다.",
+            "신선한 해산물을 밥 위에 올린다.",
+            "간장과 와사비를 곁들여 먹는다."
+        ]
+    },
+    {
+        name: "파스타",
+        recipe: [
+            "파스타 면을 삶는다.",
+            "팬에 소스를 만들고 면을 넣어 볶는다.",
+            "치즈를 뿌려 마무리한다."
+        ]
+    },
+    {
+        name: "피자",
+        recipe: [
+            "도우에 토마토 소스를 바른다.",
+            "모든 재료를 올리고 치즈를 듬뿍 뿌린다.",
+            "오븐에 굽는다."
+        ]
+    },
+    {
+        name: "스테이크",
+        recipe: [
+            "고기에 소금과 후추로 간을 한다.",
+            "팬에 앞뒤로 굽는다.",
+            "레스팅 후 썰어서 서빙한다."
+        ]
+    },
+    {
+        name: "샐러드",
+        recipe: [
+            "신선한 채소를 깨끗이 씻어 준비한다.",
+            "취향에 맞는 드레싱을 뿌린다.",
+            "닭가슴살이나 견과류를 추가하여 더욱 풍성하게 즐긴다."
+        ]
     }
 ];
 
@@ -57,12 +97,12 @@ const recipeDiv = document.getElementById('recipe');
 
 // Lotto elements
 const generateLottoBtn = document.getElementById('generate-lotto-btn');
-const lottoGamesContainer = document.getElementById('lotto-games-container'); // Changed to container
+const lottoGamesContainer = document.getElementById('lotto-games-container'); 
 
 // Chore Roulette elements
 const spinRouletteBtn = document.getElementById('spin-roulette-btn');
 const choreResultElem = document.getElementById('chore-result');
-const chores = ["설거지하기", "방 청소하기", "밥 차리기", "빨래하기", "재활용 버리기", "쓰레기 버리기"]; // Added more chores for variety
+const chores = ["설거지하기", "방 청소하기", "밥 차리기", "빨래하기", "재활용 버리기", "쓰레기 버리기"]; 
 
 
 // Food recommendation logic
@@ -73,13 +113,13 @@ recommendBtn.addEventListener('click', () => {
     foodNameElem.textContent = selectedFood.name;
     
     let recipeHtml = '<ol>';
-    if (typeof selectedFood.recipe[0] === 'object') { // Check if recipe steps are objects
+    if (typeof selectedFood.recipe[0] === 'object') { 
         recipeHtml += selectedFood.recipe.map(step => `
             <li>
                 <span>${step.text}</span>
             </li>
         `).join('');
-    } else { // Assume recipe steps are strings
+    } else { 
         recipeHtml += selectedFood.recipe.map(step => `<li>${step}</li>`).join('');
     }
     recipeHtml += '</ol>';
@@ -91,9 +131,9 @@ recommendBtn.addEventListener('click', () => {
 
 // Lotto number generation logic (5 games)
 generateLottoBtn.addEventListener('click', () => {
-    lottoGamesContainer.innerHTML = ''; // Clear previous numbers
+    lottoGamesContainer.innerHTML = ''; 
 
-    for (let i = 0; i < 5; i++) { // Generate 5 games
+    for (let i = 0; i < 5; i++) { 
         const numbers = new Set();
         while (numbers.size < 6) {
             numbers.add(Math.floor(Math.random() * 45) + 1);
