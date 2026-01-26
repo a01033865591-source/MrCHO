@@ -9,6 +9,7 @@ body {
     min-height: 100vh;
     margin: 0;
     padding: 20px;
+    box-sizing: border-box; /* Include padding in element's total width and height */
 }
 
 .container {
@@ -67,29 +68,34 @@ button:hover {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-#lotto-numbers {
+#lotto-games-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 1rem;
+}
+
+.lotto-game {
     display: flex;
     justify-content: center;
-    gap: 10px;
+    gap: 8px;
     flex-wrap: wrap;
-    min-height: 50px; /* Ensure space even when empty */
 }
 
 .lotto-number {
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    width: 45px;
-    height: 45px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     background-color: #f8d7da; /* Light red/pink background */
     color: #721c24; /* Dark red text */
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     font-weight: bold;
     border: 2px solid #dc3545;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
-
 
 /* Food Section Styles */
 .food-section {
@@ -130,4 +136,26 @@ button:hover {
 #recipe li {
     margin-bottom: 0.75rem;
     line-height: 1.6;
+}
+
+/* Chore Roulette Section Styles */
+.chore-section {
+    margin-top: 2rem;
+}
+
+#spin-roulette-btn {
+    background: linear-gradient(45deg, #ffc107, #e0a800); /* Yellow gradient */
+    margin-bottom: 1rem;
+}
+
+#spin-roulette-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+#chore-result {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #007bff; /* Blue text */
+    min-height: 30px;
 }

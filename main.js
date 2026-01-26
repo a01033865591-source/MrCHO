@@ -57,7 +57,13 @@ const recipeDiv = document.getElementById('recipe');
 
 // Lotto elements
 const generateLottoBtn = document.getElementById('generate-lotto-btn');
-const lottoNumbersSpans = document.querySelectorAll('.lotto-number');
+const lottoGamesContainer = document.getElementById('lotto-games-container'); // Changed to container
+
+// Chore Roulette elements
+const spinRouletteBtn = document.getElementById('spin-roulette-btn');
+const choreResultElem = document.getElementById('chore-result');
+const chores = ["설거지하기", "방 청소하기", "밥 차리기", "빨래하기", "재활용 버리기", "쓰레기 버리기"]; // Added more chores for variety
+
 
 // Food recommendation logic
 recommendBtn.addEventListener('click', () => {
@@ -83,15 +89,33 @@ recommendBtn.addEventListener('click', () => {
 });
 
 
-// Lotto number generation logic
+// Lotto number generation logic (5 games)
 generateLottoBtn.addEventListener('click', () => {
-    const numbers = new Set();
-    while (numbers.size < 6) {
-        numbers.add(Math.floor(Math.random() * 45) + 1);
+    lottoGamesContainer.innerHTML = ''; // Clear previous numbers
+
+    for (let i = 0; i < 5; i++) { // Generate 5 games
+        const numbers = new Set();
+        while (numbers.size < 6) {
+            numbers.add(Math.floor(Math.random() * 45) + 1);
+        }
+        const sortedNumbers = Array.from(numbers).sort((a, b) => a - b);
+        
+        const lottoGameDiv = document.createElement('div');
+        lottoGameDiv.className = 'lotto-game';
+        
+        sortedNumbers.forEach(num => {
+            const span = document.createElement('span');
+            span.className = 'lotto-number';
+            span.textContent = num;
+            lottoGameDiv.appendChild(span);
+        });
+        lottoGamesContainer.appendChild(lottoGameDiv);
     }
-    const sortedNumbers = Array.from(numbers).sort((a, b) => a - b);
-    
-    lottoNumbersSpans.forEach((span, index) => {
-        span.textContent = sortedNumbers[index];
-    });
+});
+
+
+// Chore Roulette logic
+spinRouletteBtn.addEventListener('click', () => {
+    const randomIndex = Math.floor(Math.random() * chores.length);
+    choreResultElem.textContent = chores[randomIndex];
 });

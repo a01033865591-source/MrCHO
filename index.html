@@ -3,21 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>오늘 뭐 먹지? & 로또 번호 생성기</title>
+    <title>오늘 뭐 먹지? & 로또 번호 생성기 & 집안일 룰렛</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <div class="lotto-section">
             <h1>로또 번호 생성기</h1>
-            <button id="generate-lotto-btn">번호 생성</button>
-            <div id="lotto-numbers">
-                <span class="lotto-number"></span>
-                <span class="lotto-number"></span>
-                <span class="lotto-number"></span>
-                <span class="lotto-number"></span>
-                <span class="lotto-number"></span>
-                <span class="lotto-number"></span>
+            <button id="generate-lotto-btn">번호 생성 (5게임)</button>
+            <div id="lotto-games-container">
+                <!-- Lotto numbers will be generated here by JavaScript -->
             </div>
         </div>
         
@@ -31,6 +26,14 @@
                 <h3>레시피:</h3>
                 <div id="recipe"></div>
             </div>
+        </div>
+
+        <hr> <!-- Separator -->
+
+        <div class="chore-section">
+            <h1>집안일 룰렛</h1>
+            <button id="spin-roulette-btn">룰렛 돌리기</button>
+            <p id="chore-result" class="result-text"></p>
         </div>
     </div>
     <script src="main.js"></script>
