@@ -1,14 +1,89 @@
-:root {
-  --background-color: #ffffff;
-  --text-color: #000000;
-}
-
-.dark-mode {
-  --background-color: #000000;
-  --text-color: #ffffff;
-}
-
 body {
-  background-color: var(--background-color);
-  color: var(--text-color);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f2f5;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    background-color: #ffffff;
+    padding: 2rem 3rem;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 100%;
+    max-width: 600px;
+}
+
+h1 {
+    color: #e63946;
+    margin-bottom: 1.5rem;
+}
+
+#recommend-btn {
+    background: linear-gradient(45deg, #457b9d, #1d3557);
+    color: #fff;
+    border: none;
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-bottom: 2rem;
+}
+
+#recommend-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+#result {
+    text-align: left;
+    margin-top: 2rem;
+}
+
+#result.hidden {
+    display: none;
+}
+
+#food-name {
+    color: #1d3557;
+    border-bottom: 2px solid #e63946;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+#food-image {
+    width: 100%;
+    max-width: 500px;
+    height: auto;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+#recipe {
+    background-color: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 10px;
+}
+
+#recipe h3 {
+    margin-top: 0;
+    color: #1d3557;
+}
+
+#recipe ol {
+    padding-left: 20px;
+}
+
+#recipe li {
+    margin-bottom: 0.75rem;
+    line-height: 1.6;
 }
