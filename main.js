@@ -11,7 +11,7 @@ const foods = [
     {
         name: "불고기",
         recipe: [
-            "소고기를 양념에 재운다.",
+            "소고기를 양념에 재운",
             "팬에 양념된 고기와 채소를 볶는다.",
             "국물이 자작하게 졸아들면 완성."
         ]
@@ -101,29 +101,35 @@ const lottoGamesContainer = document.getElementById('lotto-games-container');
 
 // Chore Roulette elements
 const spinRouletteBtn = document.getElementById('spin-roulette-btn');
-const choreFinalResultElem = document.getElementById('chore-final-result'); // Changed ID
+const choreFinalResultElem = document.getElementById('chore-final-result'); 
 const rouletteWheel = document.getElementById('roulette-wheel');
 const chores = ["설거지하기", "방 청소하기", "밥 차리기", "빨래하기", "재활용 버리기", "쓰레기 버리기"]; 
 
 // Generate roulette segments dynamically
-const segmentColors = ['#f8d7da', '#d1ecf1', '#ffeeba', '#c3e6cb', '#bee5eb', '#f5c6cb']; // Light colors for segments
+// More distinct colors for better visibility
+const segmentColors = [
+    '#FFC0CB', '#ADD8E6', '#90EE90', '#FFD700', '#FFA07A', '#DDA0DD',
+    '#B0E0E6', '#F0E68C', '#FAFAD2', '#D8BFD8', '#FFB6C1', '#87CEEB'
+];
 const segmentAngle = 360 / chores.length;
 
 chores.forEach((chore, index) => {
     const segment = document.createElement('div');
     segment.className = 'roulette-segment';
-    segment.textContent = chore;
     segment.style.backgroundColor = segmentColors[index % segmentColors.length];
-    segment.style.transform = `rotate(${index * segmentAngle}deg) skewY(-${90 - segmentAngle}deg)`;
     
-    // Position text correctly within the skewed segment
-    const textSpan = document.createElement('span');
-    textSpan.textContent = chore;
-    textSpan.style.transform = `skewY(${90 - segmentAngle}deg) rotate(${segmentAngle / 2}deg)`;
-    textSpan.style.display = 'block'; // Ensure span takes full width to center text
-    textSpan.style.textAlign = 'center';
+    // Rotate the entire segment div
+    segment.style.transform = `rotate(${index * segmentAngle}deg)`;
     
-    segment.appendChild(textSpan);
+    // Create inner div for text to counteract segment rotation and position it
+    const textWrapper = document.createElement('div');
+    textWrapper.className = 'segment-text-wrapper';
+    textWrapper.textContent = chore;
+    // Rotate text back so it's horizontal, and position it towards the outer edge
+    textWrapper.style.transform = `rotate(${segmentAngle / 2}deg) translate(0, -100%) rotate(${-index * segmentAngle - segmentAngle / 2}deg)`;
+    textWrapper.style.paddingTop = '10px'; // Adjust padding to move text
+    
+    segment.appendChild(textWrapper);
     rouletteWheel.appendChild(segment);
 });
 
@@ -186,20 +192,31 @@ spinRouletteBtn.addEventListener('click', () => {
     const selectedChore = chores[randomIndex];
 
     // Calculate rotation for the selected segment
-    // Each segment is segmentAngle degrees wide. The pointer is at the top (0 degrees).
-    // We want the selected segment to end up under the pointer.
-    // The center of the selected segment will be at `index * segmentAngle + segmentAngle / 2`.
-    // To land it under the pointer (at 0/360), we need to rotate by `360 - (index * segmentAngle + segmentAngle / 2)`.
-    // Add multiple full rotations (e.g., 5 * 360) for a good spin effect.
+    // We want the selected segment to land under the pointer.
+    // The pointer is at 0 degrees (top).
+    // The target is the center of the selected segment.
+    // `randomIndex * segmentAngle` is the start of the segment.
+    // `randomIndex * segmentAngle + segmentAngle / 2` is the center.
+    // To land on the center, we need to rotate by `-(center_angle)` relative to the pointer.
+    // Plus add multiple full rotations for a good spin effect.
     
-    const baseRotation = 360 * 5; // Spin at least 5 full rotations
-    const targetSegmentCenterAngle = randomIndex * segmentAngle + segmentAngle / 2;
-    // Adjust target angle to align with the pointer.
-    // If pointer is at 0 degrees, and segment center is at X, we need to rotate by (360 - X)
-    // Plus adjust for the initial rotation.
-    const rotationNeeded = baseRotation + (360 - targetSegmentCenterAngle);
+    const baseRotations = 5 * 360; // Spin at least 5 full rotations
+    const targetSegmentOffset = randomIndex * segmentAngle; // Start of the segment
+    const landingAngle = targetSegmentOffset + (segmentAngle / 2); // Center of the segment
 
-    currentRotation += rotationNeeded; // Accumulate rotation for continuous effect
+    // Calculate how much more to rotate from the current position
+    // We want the landingAngle to end up at 0 degrees (top).
+    // So, rotation_needed = (360 - landingAngle) + current_rotation
+    // To ensure it lands under the pointer (which is conceptually at 0 degrees or 360 degrees, pointing "up")
+    // We need to rotate the wheel such that the selected segment's center is aligned with the pointer.
+    // The pointer points "up" (0 degrees). A segment's start is at `index * segmentAngle`.
+    // The amount to rotate is `(360 - (start_angle + half_angle)) + base_rotations`
+    // Example: If segment 0 is from 0-60 degrees, its center is 30. We need to rotate by (360 - 30) = 330 degrees.
+    // If segment 1 is from 60-120 degrees, its center is 90. We need to rotate by (360 - 90) = 270 degrees.
+    
+    const finalRotationTarget = baseRotations + (360 - landingAngle);
+
+    currentRotation = finalRotationTarget; // Set the new rotation directly
 
     rouletteWheel.style.transition = 'transform 4s cubic-bezier(0.25, 0.1, 0.25, 1)'; // Apply transition
     rouletteWheel.style.transform = `rotate(${currentRotation}deg)`;
@@ -209,5 +226,10 @@ spinRouletteBtn.addEventListener('click', () => {
         rouletteWheel.removeEventListener('transitionend', handler);
         choreFinalResultElem.textContent = `당첨! ${selectedChore}`;
         spinRouletteBtn.disabled = false; // Re-enable button
+        // Optional: Reset rotation to a smaller value to avoid excessively large numbers
+        // and maintain visual continuity for the next spin.
+        // currentRotation = currentRotation % 360; 
+        // rouletteWheel.style.transition = 'none'; // Temporarily disable transition
+        // rouletteWheel.style.transform = `rotate(${currentRotation}deg)`;
     });
 });
