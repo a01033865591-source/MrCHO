@@ -53,15 +53,18 @@ const foods = [
 const recommendBtn = document.getElementById('recommend-btn');
 const resultDiv = document.getElementById('result');
 const foodNameElem = document.getElementById('food-name');
-// foodImageElem is no longer needed as the image tag is removed from index.html
 const recipeDiv = document.getElementById('recipe');
 
+// Lotto elements
+const generateLottoBtn = document.getElementById('generate-lotto-btn');
+const lottoNumbersSpans = document.querySelectorAll('.lotto-number');
+
+// Food recommendation logic
 recommendBtn.addEventListener('click', () => {
     const randomIndex = Math.floor(Math.random() * foods.length);
     const selectedFood = foods[randomIndex];
 
     foodNameElem.textContent = selectedFood.name;
-    // Removed foodImageElem.src assignment
     
     let recipeHtml = '<ol>';
     if (typeof selectedFood.recipe[0] === 'object') { // Check if recipe steps are objects
@@ -77,4 +80,18 @@ recommendBtn.addEventListener('click', () => {
     recipeDiv.innerHTML = recipeHtml;
     
     resultDiv.classList.remove('hidden');
+});
+
+
+// Lotto number generation logic
+generateLottoBtn.addEventListener('click', () => {
+    const numbers = new Set();
+    while (numbers.size < 6) {
+        numbers.add(Math.floor(Math.random() * 45) + 1);
+    }
+    const sortedNumbers = Array.from(numbers).sort((a, b) => a - b);
+    
+    lottoNumbersSpans.forEach((span, index) => {
+        span.textContent = sortedNumbers[index];
+    });
 });

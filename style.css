@@ -3,6 +3,7 @@ body {
     background-color: #f0f2f5;
     color: #333;
     display: flex;
+    flex-direction: column; /* Allow vertical stacking of sections */
     justify-content: center;
     align-items: center;
     min-height: 100vh;
@@ -18,6 +19,7 @@ body {
     text-align: center;
     width: 100%;
     max-width: 600px;
+    margin-bottom: 20px; /* Space between sections */
 }
 
 h1 {
@@ -25,7 +27,14 @@ h1 {
     margin-bottom: 1.5rem;
 }
 
-#recommend-btn {
+hr {
+    border: none;
+    border-top: 1px dashed #ccc;
+    margin: 2rem 0;
+    width: 80%;
+}
+
+button {
     background: linear-gradient(45deg, #457b9d, #1d3557);
     color: #fff;
     border: none;
@@ -38,9 +47,53 @@ h1 {
     margin-bottom: 2rem;
 }
 
-#recommend-btn:hover {
+button:hover {
     transform: translateY(-3px);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Lotto Section Styles */
+.lotto-section {
+    margin-bottom: 2rem;
+}
+
+#generate-lotto-btn {
+    background: linear-gradient(45deg, #28a745, #218838); /* Green gradient */
+    margin-bottom: 1rem;
+}
+
+#generate-lotto-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+#lotto-numbers {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    min-height: 50px; /* Ensure space even when empty */
+}
+
+.lotto-number {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background-color: #f8d7da; /* Light red/pink background */
+    color: #721c24; /* Dark red text */
+    font-size: 1.2rem;
+    font-weight: bold;
+    border: 2px solid #dc3545;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+
+/* Food Section Styles */
+.food-section {
+    margin-top: 2rem;
 }
 
 #result {
@@ -57,15 +110,6 @@ h1 {
     border-bottom: 2px solid #e63946;
     padding-bottom: 0.5rem;
     margin-bottom: 1rem;
-}
-
-#food-image {
-    width: 100%;
-    max-width: 500px;
-    height: auto;
-    border-radius: 10px;
-    margin-bottom: 1.5rem;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 #recipe {
