@@ -1,7 +1,7 @@
 const foods = [
     {
         name: "김치찌개",
-        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Korean_Kimchi_Jjigae.jpg/1280px-Korean_Kimchi_Jjigae.jpg",
+        image: "https://live.staticflickr.com/111/294030632_50a59727d2_o.jpg",
         recipe: [
             "김치와 돼지고기를 볶는다.",
             "육수를 붓고 끓인다.",
@@ -11,7 +11,7 @@ const foods = [
     },
     {
         name: "불고기",
-        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Korean_barbecue-Bulgogi-01.jpg/1280px-Korean_barbecue-Bulgogi-01.jpg",
+        image: "https://upload.wikimedia.org/wikipedia/commons/e/e0/Bulgogi_2.jpg",
         recipe: [
             "소고기를 양념에 재운다.",
             "팬에 양념된 고기와 채소를 볶는다.",
@@ -20,7 +20,7 @@ const foods = [
     },
     {
         name: "비빔밥",
-        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Korean_food-Bibimbap-01.jpg/1280px-Korean_food-Bibimbap-01.jpg",
+        image: "https://upload.wikimedia.org/wikipedia/commons/e/e4/Korean.cuisine-Bibimbap-01.jpg",
         recipe: [
             "밥 위에 각종 나물과 고기를 올린다.",
             "고추장을 넣고 비빈다.",
@@ -29,7 +29,7 @@ const foods = [
     },
     {
         name: "짜장면",
-        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Jjajangmyeon-01.jpg/1280px-Jjajangmyeon-01.jpg",
+        image: "https://upload.wikimedia.org/wikipedia/commons/a/a7/Jajangmyeon_by_KFoodaddict.jpg",
         recipe: [
             "춘장을 볶고 돼지고기와 채소를 넣고 볶는다.",
             "물을 넣고 끓인 후 전분으로 농도를 조절한다.",
@@ -38,7 +38,7 @@ const foods = [
     },
     {
         name: "라면",
-        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Ramen_at_Shin-Yokohama_Ramen_Museum.jpg/1280px-Ramen_at_Shin-Yokohama_Ramen_Museum.jpg",
+        image: "https://upload.wikimedia.org/wikipedia/commons/f/f8/Fresh_ramen_noodle_001.jpg",
         recipe: [
             "냄비에 물을 끓인다.",
             "면과 스프를 넣고 끓인다.",
@@ -47,7 +47,7 @@ const foods = [
     },
     {
         name: "떡볶이",
-        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Tteokbokki.jpg/1280px-Tteokbokki.jpg",
+        image: "https://upload.wikimedia.org/wikipedia/commons/a/a7/Home_made_Tteokbokki.JPG",
         recipe: [
             "냄비에 물, 고추장, 고춧가루, 설탕을 넣고 끓인다.",
             "떡과 어묵을 넣고 졸인다.",
