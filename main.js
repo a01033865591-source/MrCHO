@@ -102,28 +102,39 @@ const lottoGamesContainer = document.getElementById('lotto-games-container');
 // Chore Roulette elements
 const spinRouletteBtn = document.getElementById('spin-roulette-btn');
 const choreFinalResultElem = document.getElementById('chore-final-result'); 
-const rouletteWheel = document.getElementById('roulette-wheel'); // Changed ID from 'wheel'
+const rouletteWheel = document.getElementById('roulette-wheel'); 
 const chores = ["설거지하기", "방 청소하기", "밥 차리기", "빨래하기", "재활용 버리기", "쓰레기 버리기"]; 
 
-// More distinct colors for better visibility, and to match the conic-gradient
+// More distinct colors for better visibility
 const segmentColors = [
     '#FFADAD', '#FFD6A5', '#FDFFB6', '#CAFFBF', '#9BF6FF', '#A0C4FF',
     '#BDB2FF', '#FFC6FF', '#FFFFFC', '#E0BBE4', '#957DAD', '#FFC3A0'
 ];
 const segmentAngle = 360 / chores.length;
 
-// Dynamically set conic-gradient background for the roulette wheel
-let conicGradientString = 'conic-gradient(';
+// Dynamically generate roulette segments
+rouletteWheel.innerHTML = ''; // Clear existing conic-gradient based setup
 chores.forEach((chore, index) => {
-    const startAngle = index * segmentAngle;
-    const endAngle = (index + 1) * segmentAngle;
-    conicGradientString += `${segmentColors[index % segmentColors.length]} ${startAngle}deg ${endAngle}deg`;
-    if (index < chores.length - 1) {
-        conicGradientString += ', ';
-    }
+    const segment = document.createElement('div');
+    segment.className = 'roulette-segment';
+    segment.style.backgroundColor = segmentColors[index % segmentColors.length];
+    
+    // Rotate each segment into position
+    segment.style.transform = `rotate(${index * segmentAngle}deg)`;
+    
+    // Create text wrapper to counter-rotate text
+    const textWrapper = document.createElement('div');
+    textWrapper.className = 'segment-text-content';
+    textWrapper.textContent = chore;
+    // Counter-rotate text by half segment angle to keep it horizontal
+    // and then rotate by negative of segment's angle to compensate for parent rotation
+    const textRotation = -(index * segmentAngle + (segmentAngle / 2));
+    textWrapper.style.transform = `translateY(-50%) rotate(${textRotation}deg)`; // Adjust positioning as needed
+    
+    segment.appendChild(textWrapper);
+    rouletteWheel.appendChild(segment);
 });
-conicGradientString += ')';
-rouletteWheel.style.background = conicGradientString;
+
 
 // Food recommendation logic
 recommendBtn.addEventListener('click', () => {
@@ -184,17 +195,15 @@ spinRouletteBtn.addEventListener('click', () => {
     const selectedChore = chores[randomIndex];
 
     const baseRotations = 5 * 360; // Spin at least 5 full rotations (user's example uses 1440 = 4*360)
-    const targetAngleForSelectedChore = 360 - (randomIndex * segmentAngle + segmentAngle / 2); // Angle to land selected chore under pointer
-
-    // Add extra random spin within a small range to make it less predictable
-    const extraRandomSpin = Math.floor(Math.random() * (segmentAngle - 10)) + 5; // A little random wiggle
+    // Adjust targetAngle to land the center of the selected chore under the pointer (top center)
+    const targetAngle = 360 - (randomIndex * segmentAngle + segmentAngle / 2); 
     
-    const totalRotation = baseRotations + targetAngleForSelectedChore + extraRandomSpin;
-
-    currentRotation = totalRotation; // Set the new rotation directly
+    const totalRotation = currentRotation + baseRotations + targetAngle; // Accumulate for continuous effect
 
     rouletteWheel.style.transition = 'transform 4s cubic-bezier(0.2, 0.8, 0.3, 1)'; // User's provided transition
-    rouletteWheel.style.transform = `rotate(${currentRotation}deg)`;
+    rouletteWheel.style.transform = `rotate(${totalRotation}deg)`;
+
+    currentRotation = totalRotation; // Update currentRotation
 
     // Wait for the transition to end
     rouletteWheel.addEventListener('transitionend', function handler() {

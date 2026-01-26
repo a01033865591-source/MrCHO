@@ -160,24 +160,53 @@ button:hover {
     margin: 2rem auto;
     border-radius: 50%;
     box-shadow: 0 0 0 5px #e63946, 0 8px 25px rgba(0, 0, 0, 0.2);
-    /* overflow: hidden; Removed as segments are not individual elements anymore */
+    overflow: hidden; /* Important for segments */
 }
 
 #roulette-wheel { /* This acts as wheel */
-    width: 100%; 
+    width: 100%;
     height: 100%;
+    position: relative;
     border-radius: 50%;
     border: 5px solid #333;
     transition: transform 4s cubic-bezier(0.2, 0.8, 0.3, 1); /* User provided transition */
-    /* background: conic-gradient will be applied by JS */
 }
 
+.roulette-segment {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 50%;
+    height: 50%;
+    transform-origin: 0% 100%; /* Rotate around the bottom-left corner of the half-radius slice */
+    display: flex;
+    justify-content: center;
+    align-items: flex-end; /* Text positioned towards the outer edge */
+    text-align: center;
+    padding-bottom: 10px; /* Space from the outer edge */
+    box-sizing: border-box;
+    font-weight: bold;
+    font-size: 1.1em;
+    color: #333; /* Darker text for better contrast */
+    text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
+    overflow: hidden; /* Hide overflowing text */
+}
+
+.roulette-segment .segment-text-content {
+    /* Inner text container to allow counter-rotation */
+    transform: rotate(90deg); /* Counter-rotate text to be horizontal */
+    white-space: nowrap; /* Prevent text wrapping */
+    position: absolute;
+    bottom: 20px; /* Position text further out */
+}
+
+
 #roulette-pointer { /* Adapted from user's #pointer */
-    position: absolute; 
-    top: -20px; 
+    position: absolute;
+    top: -20px;
     left: 50%;
     transform: translateX(-50%);
-    font-size: 30px; 
+    font-size: 30px;
     z-index: 10;
     color: #e63946; /* To make it visible */
 }
