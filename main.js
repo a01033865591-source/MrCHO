@@ -101,9 +101,31 @@ const lottoGamesContainer = document.getElementById('lotto-games-container');
 
 // Chore Roulette elements
 const spinRouletteBtn = document.getElementById('spin-roulette-btn');
-const choreResultElem = document.getElementById('chore-result');
+const choreFinalResultElem = document.getElementById('chore-final-result'); // Changed ID
+const rouletteWheel = document.getElementById('roulette-wheel');
 const chores = ["설거지하기", "방 청소하기", "밥 차리기", "빨래하기", "재활용 버리기", "쓰레기 버리기"]; 
 
+// Generate roulette segments dynamically
+const segmentColors = ['#f8d7da', '#d1ecf1', '#ffeeba', '#c3e6cb', '#bee5eb', '#f5c6cb']; // Light colors for segments
+const segmentAngle = 360 / chores.length;
+
+chores.forEach((chore, index) => {
+    const segment = document.createElement('div');
+    segment.className = 'roulette-segment';
+    segment.textContent = chore;
+    segment.style.backgroundColor = segmentColors[index % segmentColors.length];
+    segment.style.transform = `rotate(${index * segmentAngle}deg) skewY(-${90 - segmentAngle}deg)`;
+    
+    // Position text correctly within the skewed segment
+    const textSpan = document.createElement('span');
+    textSpan.textContent = chore;
+    textSpan.style.transform = `skewY(${90 - segmentAngle}deg) rotate(${segmentAngle / 2}deg)`;
+    textSpan.style.display = 'block'; // Ensure span takes full width to center text
+    textSpan.style.textAlign = 'center';
+    
+    segment.appendChild(textSpan);
+    rouletteWheel.appendChild(segment);
+});
 
 // Food recommendation logic
 recommendBtn.addEventListener('click', () => {
@@ -155,7 +177,37 @@ generateLottoBtn.addEventListener('click', () => {
 
 
 // Chore Roulette logic
+let currentRotation = 0; // Keep track of the current rotation for continuous spins
 spinRouletteBtn.addEventListener('click', () => {
+    spinRouletteBtn.disabled = true; // Disable button during spin
+    choreFinalResultElem.textContent = ''; // Clear previous result
+
     const randomIndex = Math.floor(Math.random() * chores.length);
-    choreResultElem.textContent = chores[randomIndex];
+    const selectedChore = chores[randomIndex];
+
+    // Calculate rotation for the selected segment
+    // Each segment is segmentAngle degrees wide. The pointer is at the top (0 degrees).
+    // We want the selected segment to end up under the pointer.
+    // The center of the selected segment will be at `index * segmentAngle + segmentAngle / 2`.
+    // To land it under the pointer (at 0/360), we need to rotate by `360 - (index * segmentAngle + segmentAngle / 2)`.
+    // Add multiple full rotations (e.g., 5 * 360) for a good spin effect.
+    
+    const baseRotation = 360 * 5; // Spin at least 5 full rotations
+    const targetSegmentCenterAngle = randomIndex * segmentAngle + segmentAngle / 2;
+    // Adjust target angle to align with the pointer.
+    // If pointer is at 0 degrees, and segment center is at X, we need to rotate by (360 - X)
+    // Plus adjust for the initial rotation.
+    const rotationNeeded = baseRotation + (360 - targetSegmentCenterAngle);
+
+    currentRotation += rotationNeeded; // Accumulate rotation for continuous effect
+
+    rouletteWheel.style.transition = 'transform 4s cubic-bezier(0.25, 0.1, 0.25, 1)'; // Apply transition
+    rouletteWheel.style.transform = `rotate(${currentRotation}deg)`;
+
+    // Wait for the transition to end
+    rouletteWheel.addEventListener('transitionend', function handler() {
+        rouletteWheel.removeEventListener('transitionend', handler);
+        choreFinalResultElem.textContent = `당첨! ${selectedChore}`;
+        spinRouletteBtn.disabled = false; // Re-enable button
+    });
 });
