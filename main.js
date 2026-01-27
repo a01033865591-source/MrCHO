@@ -126,7 +126,8 @@ chores.forEach((chore, index) => {
     const textWrapper = document.createElement('div');
     textWrapper.className = 'segment-text-content';
     textWrapper.textContent = chore;
-    // No counter-rotation here, text will rotate with the segment
+    // Apply counter-rotation to the text to keep it upright
+    textWrapper.style.transform = `rotate(${-index * segmentAngle}deg)`;
     
     segment.appendChild(textWrapper);
     rouletteWheel.appendChild(segment);
@@ -247,7 +248,7 @@ const drawLunchRoulette = () => {
     }
 
     lunchCtx.fillStyle = "#fff"; // Text color
-    lunchCtx.font = "18px Pretendard"; // Font
+    lunchCtx.font = "18px Arial, sans-serif"; // Font
     lunchCtx.textAlign = "center";
     lunchCtx.textBaseline = "middle"; // Center text vertically
     
