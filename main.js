@@ -319,25 +319,34 @@ const spinLunchRoulette = () => {
     // Let's try to adapt the user's spin logic, which uses `ran * arc + 3600 + (arc * 3) - (arc/4) + alpha;`
     // where `arc` is 360/product.length and `ran` is randomIndex.
     
-    const finalRotateValue = (randomIndex * segmentDegree) + 3600 + (segmentDegree * 3) - (segmentDegree / 4) + Math.floor(Math.random() * (segmentDegree / 2));
-    
-    lunchCanvas.style.transform = `rotate(-${finalRotateValue}deg)`;
+    const segmentDegree = 360 / lunchProduct.length; // Each segment's angle
+
+    // Calculate the angle needed to bring the selected item to the top
+    // The center of the selected segment will be at this angle when it stops.
+    // If segment 0 starts at 0, its center is at segmentDegree / 2.
+    // For segment 'randomIndex', its center is at `randomIndex * segmentDegree + segmentDegree / 2`.
+    // We want this center to align with the top (0 degrees).
+    // So, the rotation needed is `360 - (randomIndex * segmentDegree + segmentDegree / 2)` degrees.
+    const centerAngleOfSelectedItem = (randomIndex * segmentDegree) + (segmentDegree / 2);
+    const rotationToAlign = 360 - centerAngleOfSelectedItem; // Angle to bring center of segment to the top
+
+    const baseRotations = 5 * 360; // Spin at least 5 full rotations for visual effect
+    const totalRotation = currentLunchSpin + baseRotations + rotationToAlign;
+
     lunchCanvas.style.transition = `transform 4s cubic-bezier(0.2, 0.8, 0.3, 1)`;
+    lunchCanvas.style.transform = `rotate(${totalRotation}deg)`;
+
+    currentLunchSpin = totalRotation; // Update for next spin
 
     setTimeout(() => {
         lunchMenuResultElem.textContent = `당첨! ${selectedItem}`;
         spinLunchRouletteBtn.disabled = false;
-        // Reset transform after spin to prevent accumulating huge rotation values,
-        // while visually maintaining the result.
-        // Get the computed final rotation.
-        const currentTransform = window.getComputedStyle(lunchCanvas).getPropertyValue('transform');
-        const matrix = new DOMMatrixReadOnly(currentTransform);
-        const currentZRotation = Math.atan2(matrix.m21, matrix.m11) * (180 / Math.PI);
-        // Normalize angle to be between 0 and 360
-        const normalizedAngle = (currentZRotation + 360) % 360;
-
-        lunchCanvas.style.transition = 'none'; // Disable transition for instant reset
-        lunchCanvas.style.transform = `rotate(${normalizedAngle}deg)`; // Reset to normalized angle
+        // After the animation, reset the transform to an equivalent smaller angle
+        // to prevent the rotation value from becoming excessively large with subsequent spins.
+        const normalizedAngle = totalRotation % 360;
+        lunchCanvas.style.transition = 'none'; // Disable transition for instant snap
+        lunchCanvas.style.transform = `rotate(${normalizedAngle}deg)`;
+        currentLunchSpin = normalizedAngle; // Update currentLunchSpin with normalized value
     }, 4000); // Wait for transition to complete
 };
 
