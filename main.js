@@ -1,100 +1,93 @@
-const foods = [
-    {
-        name: "김치찌개",
-        recipe: [
-            { text: "김치와 돼지고기를 볶는다." },
-            { text: "육수를 붓고 끓인다." },
-            { text: "두부, 파 등을 넣고 한소끔 더 끓인다." },
-            { text: "간을 맞춘다." }
-        ]
-    },
-    {
-        name: "불고기",
-        recipe: [
-            "소고기를 양념에 재운",
-            "팬에 양념된 고기와 채소를 볶는다.",
-            "국물이 자작하게 졸아들면 완성."
-        ]
-    },
-    {
-        name: "비빔밥",
-        recipe: [
-            "밥 위에 각종 나물과 고기를 올린다.",
-            "고추장을 넣고 비빈다.",
-            "취향에 따라 계란 프라이를 추가한다."
-        ]
-    },
-    {
-        name: "짜장면",
-        recipe: [
-            "춘장을 볶고 돼지고기와 채소를 넣고 볶는다.",
-            "물을 넣고 끓인 후 전분으로 농도를 조절한다.",
-            "삶은 면 위에 소스를 붓는다."
-        ]
-    },
-    {
-        name: "라면",
-        recipe: [
-            "냄비에 물을 끓인다.",
-            "면과 스프를 넣고 끓인다.",
-            "계란, 파 등을 추가하여 취향껏 즐긴다."
-        ]
-    },
-    {
-        name: "떡볶이",
-        recipe: [
-            "냄비에 물, 고추장, 고춧가루, 설탕을 넣고 끓인다.",
-            "떡과 어묵을 넣고 졸인다.",
-            "파, 양파 등을 추가하여 마무리한다."
-        ]
-    },
-    {
-        name: "초밥",
-        recipe: [
-            "초밥용 밥을 준비한다.",
-            "신선한 해산물을 밥 위에 올린다.",
-            "간장과 와사비를 곁들여 먹는다."
-        ]
-    },
-    {
-        name: "파스타",
-        recipe: [
-            "파스타 면을 삶는다.",
-            "팬에 소스를 만들고 면을 넣어 볶는다.",
-            "치즈를 뿌려 마무리한다."
-        ]
-    },
-    {
-        name: "피자",
-        recipe: [
-            "도우에 토마토 소스를 바른다.",
-            "모든 재료를 올리고 치즈를 듬뿍 뿌린다.",
-            "오븐에 굽는다."
-        ]
-    },
-    {
-        name: "스테이크",
-        recipe: [
-            "고기에 소금과 후추로 간을 한다.",
-            "팬에 앞뒤로 굽는다.",
-            "레스팅 후 썰어서 서빙한다."
-        ]
-    },
-    {
-        name: "샐러드",
-        recipe: [
-            "신선한 채소를 깨끗이 씻어 준비한다.",
-            "취향에 맞는 드레싱을 뿌린다.",
-            "닭가슴살이나 견과류를 추가하여 더욱 풍성하게 즐긴다."
-        ]
-    }
+const items = [
+  "설갆이",
+  "방청소",
+  "밥차리기",
+  "빨래하기",
+  "재활용버리기",
+  "정리정돈"
 ];
 
-const recommendBtn = document.getElementById('recommend-btn');
-const resultDiv = document.getElementById('result');
-const foodNameElem = document.getElementById('food-name');
-const recipeDiv = document.getElementById('recipe');
+const roulette = document.getElementById("roulette");
+const result = document.getElementById("result");
+const ruleText = document.getElementById("rule");
 
-// Lotto elements
-const generateLottoBtn = document.getElementById('generate-lotto-btn');
-const lottoGamesContainer = document.getElementById('lotto-games-container'); 
+const angle = 360 / items.length;
+let rotation = 0;
+
+// 항목 생성
+items.forEach((item, i) => {
+  const div = document.createElement("div");
+  div.className = "item";
+  div.style.transform = `rotate(${angle * i}deg)`;
+  div.textContent = item;
+  roulette.appendChild(div);
+});
+
+// 🔊 사운드
+function beep(freq, time) {
+  const ctx = new AudioContext();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.frequency.value = freq;
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  gain.gain.setValueAtTime(0.3, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + time);
+  osc.start();
+  osc.stop(ctx.currentTime + time);
+}
+
+// 🎊 컨페티
+function confetti() {
+  for (let i = 0; i < 60; i++) {
+    const div = document.createElement("div");
+    div.className = "confetti";
+    div.style.left = Math.random() * window.innerWidth + "px";
+    div.style.background = `hsl(${Math.random()*360},100%,50%)`;
+    div.style.animationDuration = 2 + Math.random() * 2 + "s";
+    document.body.appendChild(div);
+    setTimeout(() => div.remove(), 3000);
+  }
+}
+
+// 룰
+function getRule() {
+  const r = Math.random();
+  if (r < 0.2) return "🎉 보너스! 면제권 획득!";
+  if (r < 0.4) return "😈 벌칙! 해당 집안일 2배!";
+  return "🙂 일반 수행!";
+}
+
+function spin() {
+  result.textContent = "";
+  ruleText.textContent = "";
+
+  roulette.classList.add("spin-glow");
+
+  if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+
+  // 회전 중 틱틱
+  const tick = setInterval(() => beep(300, 0.05), 150);
+
+  const index = Math.floor(Math.random() * items.length);
+  const target = 360 * 7 + (360 - index * angle - angle / 2);
+  rotation += target;
+
+  roulette.style.transition =
+    "transform 5s cubic-bezier(0.05, 0.8, 0.2, 1)";
+  roulette.style.transform = `rotate(${rotation}deg)`;
+
+  setTimeout(() => {
+    clearInterval(tick);
+    roulette.classList.remove("spin-glow");
+    beep(1200, 0.4);
+    confetti();
+    document.body.classList.add("shake");
+    if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+
+    result.textContent = `🎯 ${items[index]} 당첨!`;
+    ruleText.textContent = getRule();
+
+    setTimeout(() => document.body.classList.remove("shake"), 500);
+  }, 5000);
+}
