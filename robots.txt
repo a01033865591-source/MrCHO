@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://a01033865591-source.github.io/MrCHO/sitemap.xml
