@@ -1,25 +1,4 @@
-/* 계산기 */
-  function calcTravel() {
-    const days = Number(document.getElementById("days").value);
-    const daily = Number(document.getElementById("daily").value);
-    if (!days || !daily) {
-      document.getElementById("travelResult").innerText = "값을 모두 입력해주세요.";
-      return;
-    }
-    document.getElementById("travelResult").innerText =
-      "예상 총 여행 경비: " + (days * daily).toLocaleString() + "원";
-  }
 
-  function calcLife() {
-    const income = Number(document.getElementById("income").value);
-    const expense = Number(document.getElementById("expense").value);
-    if (!income || !expense) {
-      document.getElementById("lifeResult").innerText = "값을 모두 입력해주세요.";
-      return;
-    }
-    document.getElementById("lifeResult").innerText =
-      "남는 금액: " + (income - expense).toLocaleString() + "원";
-  }
 
   /* 네이버 블로그 RSS 연동 */
   const RSS_URL =

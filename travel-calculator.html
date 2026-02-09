@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>해외 여행 경비 계산기 | 환율 자동</title>
+<meta name="description" content="실시간 환율로 해외여행 총 경비와 1인당 비용을 계산하는 무료 여행 계산기">
+<link rel="stylesheet" href="style.css" /> <!-- 기존 스타일시트 연결 -->
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f6f9;
+  padding: 20px;
+}
+.wrap {
+  max-width: 480px;
+  margin: auto;
+  background: #fff;
+  padding: 20px;
+  border-radius: 14px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+}
+label {
+  font-weight: bold;
+  margin-top: 12px;
+  display: block;
+}
+select, input[type="text"], input[type="number"] {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+.item {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}
+.item input {
+  flex: 1;
+}
+.item button {
+  background: #ff6b6b;
+  border: none;
+  color: #fff;
+  border-radius: 6px;
+  padding: 0 10px;
+  cursor: pointer;
+}
+button.main-button { /* 계산하기, 항목 추가 버튼에 적용될 스타일 */
+  width: 100%;
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  background: #2f80ed;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+}
+.result {
+  margin-top: 20px;
+  background: #eef5ff;
+  padding: 15px;
+  border-radius: 10px;
+  font-weight: bold;
+  color: #333;
+}
+header { /* 기존 헤더 스타일 추가 */
+  background: #fff;
+  padding: 10px 20px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+header h1 {
+  font-size: 24px;
+  margin: 0;
+}
+header nav a {
+  margin-left: 15px;
+  text-decoration: none;
+  color: #2f80ed;
+  font-weight: bold;
+}
+footer { /* 기존 푸터 스타일 추가 */
+  text-align: center;
+  padding: 20px;
+  margin-top: 40px;
+  border-top: 1px solid #eee;
+  color: #777;
+  font-size: 14px;
+}
+footer a {
+  color: #2f80ed;
+  text-decoration: none;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1><a href="index.html" style="text-decoration:none; color:#333;">여행·일상 기록 & 생활 계산기</a></h1>
+  <nav>
+    <a href="index.html">홈</a>
+    <a href="about.html">소개</a>
+    <a href="privacy.html">개인정보처리방침</a>
+  </nav>
+</header>
+
+<div class="wrap">
+  <h2>🌍 해외 여행 경비 계산기</h2>
+
+  <label for="currency">통화 선택</label>
+  <select id="currency">
+    <option value="USD">미국 달러 (USD)</option>
+    <option value="JPY">일본 엔 (JPY)</option>
+    <option value="EUR">유로 (EUR)</option>
+    <option value="CNY">중국 위안 (CNY)</option>
+    <option value="GBP">영국 파운드 (GBP)</option>
+  </select>
+
+  <label for="rate">환율 (자동, KRW 기준)</label>
+  <input type="number" id="rate" readonly>
+
+  <label>경비 항목</label>
+  <div id="items"></div>
+
+  <button onclick="addItem()" class="main-button">+ 항목 추가</button>
+
+  <label for="people">인원수</label>
+  <input type="number" id="people" value="1" min="1">
+
+  <button onclick="calculate()" class="main-button">계산하기</button>
+
+  <div id="result" class="result">
+    결과가 여기에 표시됩니다.
+  </div>
+</div>
+
+<footer>
+  <p>© 2026 개인 블로그. 모든 권리 보유. All rights reserved.</p>
+  <p>
+    <a href="about.html">소개</a> | 
+    <a href="privacy.html">개인정보처리방침</a> |
+    <a href="index.html#contact">문의</a>
+  </p>
+</footer>
+
+<script>
+const itemsDiv = document.getElementById('items');
+
+// 초기 항목 추가 함수 (기존 코드와 동일)
+function addItem(name = '', cost = '') {
+  const div = document.createElement('div');
+  div.className = 'item';
+  div.innerHTML = `
+    <input type="text" placeholder="항목명" value="${name}">
+    <input type="number" placeholder="금액" value="${cost}">
+    <button onclick="this.parentElement.remove()">X</button>
+  `;
+  itemsDiv.appendChild(div);
+}
+
+// 환율 가져오기 함수 (기존 코드와 동일)
+async function fetchRate() {
+  const currency = document.getElementById('currency').value;
+  try {
+    // API 호출 시 CORS 문제 발생 가능성, proxy 필요 또는 다른 공개 API 고려
+    // exchabgerate.host API는 무료 플랜에서 rate limit이 있을 수 있음
+    // 이 예제에서는 단순화를 위해 API 호출을 유지하나, 실제 운영시 안정적인 환율 API 사용 권장
+    const res = await fetch(`https://api.exchangerate.host/latest?base=${currency}&symbols=KRW`);
+    if (!res.ok) { // 응답이 성공적인지 확인
+        throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    const data = await res.json();
+    if (data.rates && data.rates.KRW) {
+        document.getElementById('rate').value = data.rates.KRW.toFixed(2);
+    } else {
+        document.getElementById('rate').value = 0;
+        console.error('API 응답에서 KRW 환율을 찾을 수 없습니다.');
+    }
+  } catch (error) {
+    document.getElementById('rate').value = 0;
+    console.error('환율 정보를 가져오는 데 실패했습니다:', error);
+  }
+}
+
+// 계산 함수 (기존 코드와 동일)
+function calculate() {
+  let total = 0;
+  document.querySelectorAll('.item').forEach(item => {
+    // children[1]은 금액 입력 필드
+    total += Number(item.children[1].value) || 0;
+  });
+
+  const rate = Number(document.getElementById('rate').value) || 0;
+  const people = Number(document.getElementById('people').value) || 1;
+
+  if (rate === 0) {
+      document.getElementById('result').innerHTML = `환율 정보를 가져오지 못했습니다. 잠시 후 다시 시도해주세요.`;
+      return;
+  }
+  if (people < 1) {
+      document.getElementById('result').innerHTML = `인원수는 1명 이상이어야 합니다.`;
+      return;
+  }
+
+  const totalKRW = total * rate;
+  const perPerson = people > 0 ? Math.round(totalKRW / people) : 0; // people이 0일 경우 NaN 방지
+
+  document.getElementById('result').innerHTML = `
+    <p>총 여행경비: <strong>${totalKRW.toLocaleString()}원</strong></p>
+    <p>1인당 비용: <strong>${perPerson.toLocaleString()}원</strong></p>
+  `;
+}
+
+// 초기 로딩 시 실행
+document.addEventListener('DOMContentLoaded', () => {
+    // 초기 항목 추가
+    addItem('항공권', 1000); // 예시 금액 추가
+    addItem('숙소', 500);
+    addItem('식비', 300);
+    
+    // 환율 가져오기
+    fetchRate();
+    // 통화 변경 시 환율 업데이트
+    document.getElementById('currency').addEventListener('change', fetchRate);
+});
+</script>
+
+</body>
+</html>
